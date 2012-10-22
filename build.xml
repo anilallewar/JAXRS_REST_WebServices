@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<project name="REST web services Samples" default="war" basedir=".">
+	<property file="ant.properties" />
+
+	<path id="classpath">
+		<pathelement location="build/WEB-INF/classes" />
+		<fileset dir="${jsxrs.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${servlet.lib.jar}" />
+		<pathelement location="${jspapi.lib.jar}" />
+	</path>
+
+	<target name="clean" description="Clears all generated files, including build directories, distributables, and documentation.">
+		<delete dir="${build.dir}" />
+		<delete dir="${war.dir}" />
+	</target>
+
+	<target name="copyResources" description="Moves the JSPs and other resources to
+    			appropriate location for the war file.">
+		<!--echo message="classpath: ${toString:classpath}"/-->
+		<copy todir="${build.dir}">
+			<fileset dir="${webcontent.dir}">
+				<include name="**/*" />
+				<exclude name="**/*.jar" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="compile" description="Compiles the application and arranges resources into a web archive hierarchy.">
+		<mkdir dir="${build.dir}/WEB-INF/classes" />
+		<mkdir dir="${build.dir}/WEB-INF/classes/META-INF" />
+		<mkdir dir="${build.dir}/WEB-INF/lib" />
+
+		<copy todir="${build.dir}/WEB-INF/lib">
+			<fileset dir="${jsxrs.lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}/WEB-INF/classes/META-INF">
+			<fileset dir="${src.dir}/META-INF">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}/WEB-INF/classes">
+			<fileset dir="${src.dir}/properties">
+				<include name="*.properties" />
+			</fileset>
+		</copy>
+
+		<javac srcdir="${src.dir}" destdir="${build.dir}/WEB-INF/classes" debug="${debug}" deprecation="yes">
+			<classpath refid="classpath" />
+		</javac>
+
+	</target>
+
+	<target name="war" depends="clean, copyResources, compile" description="Builds a web archive of the application.">
+		<mkdir dir="${war.dir}" />
+		<jar jarfile="${war.dir}/${warfile}" basedir="${build.dir}" />
+	</target>
+
+	<target name="deploy" depends="war">
+		<echo message=" deploying ${war.dir}/${warfile} to ${deploy.dir}" />
+		<copy file="${war.dir}/${warfile}" todir="${deploy.dir}" overwrite="true" />
+	</target>
+
+</project>

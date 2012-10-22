@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	
+	<persistence-unit name="jaxrsexample" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		
+		<class>com.anil.jaxrs.model.Address</class>
+        <class>com.anil.jaxrs.model.Employee</class>
+        		
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		
+		<properties>
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+	        <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/jaxrs"/>
+	        <property name="hibernate.connection.username" value="root"/>
+	        <property name="hibernate.connection.password" value="password"/>
+	        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+	        <property name="hibernate.show_sql" value="true"/>
+	        <property name="hibernate.format_sql" value="true"/>
+	        
+	        <property name="hibernate.jdbc.batch_size" value="250"/>
+	
+	        <!-- Use the C3P0 connection pool provider -->
+	        <!-- configuration pool via c3p0-->
+	        <property name="hibernate.c3p0.min_size" value="3"/>
+	        <property name="hibernate.c3p0.max_size" value="40"/>
+	        <property name="hibernate.c3p0.idle_test_period" value="60"/>
+	        <property name="hibernate.c3p0.timeout" value="600"/>
+	        <property name="hibernate.c3p0.preferredTestQuery" value="select 1;"/>
+	
+	        <property name="use_identifier_rollback" value="true"/>
+	
+	        <!--
+			It is important that you do not override hibernate.transaction.factory_class, Hibernate Entity-
+   			Manager automatically set the appropriate transaction factory depending on the EntityManager type (ie
+			JTA versus RESOURSE_LOCAL)
+			-->
+			
+	        <!-- Disable the second-level cache  -->
+	       	<property name="hibernate.cache.use_second_level_cache" value="false" />
+	    	<property name="hibernate.cache.use_query_cache" value="false" />
+	 	    <property name="cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+	
+	        <property name="hibernate.connection.autocommit" value="false"/>
+	
+	        <!-- Update the database schema on startup -->
+	        <property name="hibernate.hbm2ddl.auto" value="update"/>	
+	        	
+		</properties>
+	</persistence-unit>
+</persistence>

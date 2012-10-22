@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>JAXRS_REST_WebServices</display-name>
+
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.anil.jaxrs.resource.config.ApplicationConfigSetter</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- We need to overide the mapping for the default servlet defined in {tomcat 
+		home}/conf/web.xml so that for this application, all the requests are by 
+		default handled by the Jersey servlet. If we map with /*, then it is different 
+		from the default mapping / and hence the *.jsp extension requests are mapped 
+		to the jersey servlet which cannot handle it. The disadvantage to /*, is 
+		that you will need to handle everything, where with / you can still setup 
+		extension mappings -->
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<!-- The mapping for the JSP servlet -->
+	<servlet-mapping>
+		<servlet-name>jsp</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>
+
+	<!-- The web resources with root /rest are protected -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>REST</web-resource-name>
+			<url-pattern>/rest/employee/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<!-- Use the tomcat-users.xml for authentication -->
+			<role-name>tomcat</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Define the Login Configuration for this Application -->
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>UserDatabaseRealm</realm-name>
+	</login-config>
+
+	<!-- Security roles referenced by this web application -->
+	<security-role>
+		<description>The unlimited role allowed to login to the application.</description>
+		<role-name>tomcat</role-name>
+	</security-role>
+</web-app>
